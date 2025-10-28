@@ -1,17 +1,18 @@
-# Use OpenJDK 17
+# Use OpenJDK 17 and install Maven
 FROM openjdk:17-jdk-slim
 
-# Set working directory
+# Install Maven
+RUN apt-get update && apt-get install -y maven
+
 WORKDIR /app
 
-# Copy Maven build files and code
+# Copy project files
 COPY . .
 
 # Build the app
-RUN ./mvnw clean package -DskipTests
+RUN mvn clean package -DskipTests
 
-# Expose port 8080
 EXPOSE 8080
 
-# Run the Spring Boot jar
+# Run the Spring Boot jar (make sure the jar name matches your output)
 CMD ["java", "-jar", "target/demo-0.0.1-SNAPSHOT.jar"]
