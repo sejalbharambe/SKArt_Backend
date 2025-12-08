@@ -1,9 +1,9 @@
 package com.example.demo.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-// import com.fasterxml.jackson.annotation.JsonProperty;
-
 import jakarta.persistence.*;
+import java.util.Map;
+// import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "users")
@@ -28,7 +28,20 @@ public class User {
     private boolean verified = false;
     private String otp;
 
-      User() {
+    @Column(columnDefinition = "TEXT")
+    private String about;
+
+    private String location;
+    private String profileImage;
+
+    // store social links
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "user_links", joinColumns = @JoinColumn(name = "user_id"))
+    @MapKeyColumn(name = "platform")
+    @Column(name = "link")
+    private Map<String, String> links;
+
+    public User() {
     }
 
     // for normal user
@@ -128,6 +141,38 @@ public class User {
 
     public void setOtp(String otp) {
         this.otp = otp;
+    }
+
+    public String getAbout() {
+        return about;
+    }
+
+    public void setAbout(String about) {
+        this.about = about;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
+    public String getProfileImage() {
+        return profileImage;
+    }
+
+    public void setProfileImage(String profileImage) {
+        this.profileImage = profileImage;
+    }
+
+    public Map<String, String> getLinks() {
+        return links;
+    }
+
+    public void setLinks(Map<String, String> links) {
+        this.links = links;
     }
 
 }
