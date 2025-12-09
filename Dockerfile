@@ -4,9 +4,9 @@ FROM eclipse-temurin:17-jdk AS build
 WORKDIR /app
 
 # Copy Maven configuration
-COPY pom.xml .
+COPY pom.xml ./
 
-# Install Maven manually (Temurin image doesn't include Maven)
+# Install Maven manually
 RUN apt-get update && apt-get install -y maven
 
 # Download dependencies
@@ -17,7 +17,6 @@ COPY src ./src
 
 # Build jar
 RUN mvn clean package -DskipTests
-
 
 # ---------- RUNTIME STAGE ----------
 FROM eclipse-temurin:17-jre
