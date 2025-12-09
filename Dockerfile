@@ -1,18 +1,31 @@
-# Use OpenJDK 17 and install Maven
-FROM openjdk:17-jdk-slim
-
-# Install Maven
-RUN apt-get update && apt-get install -y maven
+# ---------- BUILD STAGE ----------
+FROM eclipse-temurin:17-jdk AS build
 
 WORKDIR /app
 
-# Copy project files
-COPY . .
+# Copy Maven configuration
+COPY pom.xml .
 
-# Build the app
+# Install Maven manually (Temurin image doesn't include Maven)
+RUN apt-get update && apt-get install -y maven
+
+# Download dependencies
+RUN mvn dependency:go-offline -B
+
+# Copy source code
+COPY src ./src
+
+# Build jar
 RUN mvn clean package -DskipTests
+
+
+# ---------- RUNTIME STAGE ----------
+FROM eclipse-temurin:17-jre
+
+WORKDIR /app
+
+COPY --from=build /app/target/*.jar app.jar
 
 EXPOSE 8080
 
-# Run the Spring Boot jar (make sure the jar name matches your output)
-CMD ["java", "-jar", "target/demo-0.0.1-SNAPSHOT.jar"]
+ENTRYPOINT ["java", "-jar", "app.jar"]
