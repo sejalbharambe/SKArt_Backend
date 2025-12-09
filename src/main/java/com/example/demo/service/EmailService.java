@@ -11,7 +11,8 @@ public class EmailService {
 
     private final Resend resend;
 
-    public EmailService(@Value("${resend.api.key}") String apiKey) {
+    // public EmailService(@Value("${resend.api.key}") String apiKey) {
+     public EmailService(@Value("${RESEND_API_KEY}") String apiKey) {
         this.resend = new Resend(apiKey);
     }
 
