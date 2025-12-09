@@ -1,21 +1,34 @@
 package com.example.demo.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
+import com.resend.Resend;
+import com.resend.services.emails.model.SendEmailRequest;
+import com.resend.services.emails.model.SendEmailResponse;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 @Service
 public class EmailService {
 
-    @Autowired
-    private JavaMailSender mailSender;
+    private final Resend resend;
 
-    public void sendOtpEmail(String to, String otp) {
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setTo(to);
-        message.setSubject("Email Verification OTP");
-        message.setText("Your OTP for email verification is: " + otp + "\n\nIt will expire in 5 minutes.");
-        mailSender.send(message);
+    public EmailService(@Value("${resend.api.key}") String apiKey) {
+        this.resend = new Resend(apiKey);
+    }
+
+    public void sendOtpEmail(String to, String otp) throws Exception {
+
+        String htmlContent = "<h2>Your OTP for Email Verification</h2>" +
+                "<p><strong>" + otp + "</strong></p>" +
+                "<p>This OTP will expire in 5 minutes.</p>";
+
+        SendEmailRequest request = SendEmailRequest.builder()
+                .from("SKArt <onboarding@resend.dev>")
+                .to(to)
+                .subject("Email Verification OTP")
+                .html(htmlContent)
+                .build();
+
+        SendEmailResponse response = resend.emails().send(request);
+        // optionally process response.getId()
     }
 }
