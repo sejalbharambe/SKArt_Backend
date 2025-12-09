@@ -11,13 +11,15 @@ public class EmailService {
 
     private final Resend resend;
 
-    // public EmailService(@Value("${resend.api.key}") String apiKey) {
-     public EmailService(@Value("${RESEND_API_KEY}") String apiKey) {
+    public EmailService() {
+        String apiKey = System.getenv("RESEND_API_KEY"); // direct environment variable
+        if (apiKey == null || apiKey.isEmpty()) {
+            throw new RuntimeException("RESEND_API_KEY environment variable not set!");
+        }
         this.resend = new Resend(apiKey);
     }
 
     public void sendOtpEmail(String to, String otp) throws Exception {
-
         String htmlContent = "<h2>Your OTP for Email Verification</h2>" +
                 "<p><strong>" + otp + "</strong></p>" +
                 "<p>This OTP will expire in 5 minutes.</p>";
@@ -29,7 +31,6 @@ public class EmailService {
                 .html(htmlContent)
                 .build();
 
-        SendEmailResponse response = resend.emails().send(request);
-        // optionally process response.getId()
+        resend.emails().send(request);
     }
 }
