@@ -24,7 +24,7 @@ public class WebConfig implements WebMvcConfigurer {
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**") // applies to all endpoints
                         .allowedOrigins(
-                            "https://sk-art-frontend.vercel.app",
+                            "http://pureskartgallery-frontend.s3-website.ap-south-1.amazonaws.com",
                             "http://localhost:5173"//local url
                             ) 
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
