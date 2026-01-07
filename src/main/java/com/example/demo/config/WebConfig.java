@@ -9,14 +9,14 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
 
-    // ✅ Serve uploaded images
+    // Serve uploaded images
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/uploads/**")
                 .addResourceLocations("file:./uploads/");
     }
 
-    // ✅ Global CORS configuration (applies to all controllers)
+    // Global CORS configuration
     @Bean
     public WebMvcConfigurer corsConfigurer() {
         return new WebMvcConfigurer() {
@@ -25,10 +25,11 @@ public class WebConfig implements WebMvcConfigurer {
                 registry.addMapping("/**") // applies to all endpoints
                         .allowedOrigins(
                             "http://pureskartgallery-frontend.s3-website.ap-south-1.amazonaws.com",
-                            "http://localhost:5173"//local url
-                            ) 
+                            "http://localhost:5173"
+                        )
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
-                        .allowedHeaders("*");
+                        .allowedHeaders("*")
+                        .allowCredentials(true); 
             }
         };
     }
